@@ -11,6 +11,7 @@ import scrapy
 class PcelItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+    url = scrapy.Field()
     image = scrapy.Field()
     rating = scrapy.Field()
     brand = scrapy.Field()

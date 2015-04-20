@@ -15,3 +15,5 @@ NEWSPIDER_MODULE = 'Pcel.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'Pcel (+http://www.yourdomain.com)'
+
+AUTOTHROTTLE_ENABLED = True

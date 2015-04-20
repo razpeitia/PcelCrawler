@@ -4,12 +4,17 @@ from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
 from Pcel.items import PcelItem
 
+
+def get_start_urls():
+    with open('start_urls.txt') as f:
+        for url in f:
+            yield url.strip()
+
 class PcelSpider(CrawlSpider):
     name = "pcel"
     allowed_domains = ["pcel.com"]
-    start_urls = (
-        'http://pcel.com/computadoras/laptops-notebooks',
-    )
+    start_urls = list(get_start_urls())
+    
     rules = (
         Rule(
             LxmlLinkExtractor(
@@ -23,6 +28,7 @@ class PcelSpider(CrawlSpider):
     def parse_item(self, response):
         for product in response.xpath('//div[@class="product-list"]/table/tr[count(*)=4]'):
             image = ''.join(product.xpath('.//div[@class="image"]/a/img/@src').extract())
+            url = ''.join(product.xpath('.//div[@class="image"]/a/@href').extract())
             rating = int(''.join(product.xpath('.//div[@class="rating"]/img/@src').re('\d+')))
             brand = ''.join(product.xpath('./td[2]/a/img/@alt').extract())
             sku = int(''.join(product.xpath('./td[2]/span[1]/text()').re('Sku: (\d+)')))
@@ -34,6 +40,7 @@ class PcelSpider(CrawlSpider):
                 new_price = ''.join(product.xpath('.//div[@class="price"]/text()').extract()).strip()
                 old_price = new_price
             item = PcelItem()
+            item['url'] = url
             item['image'] = image
             item['rating'] = rating
             item['brand'] = brand
